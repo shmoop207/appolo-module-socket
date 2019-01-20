@@ -8,7 +8,7 @@ const chaiHttp = require("chai-http");
 chai.use(chaiHttp);
 let should = require('chai').should();
 //chai.use(sinonChai);
-describe("vault module Spec", function () {
+describe("socket module Spec", function () {
     let app, socket;
     beforeEach(async () => {
         app = appolo_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8182 });

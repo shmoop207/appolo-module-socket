@@ -11,7 +11,7 @@ let should = require('chai').should();
 //chai.use(sinonChai);
 
 
-describe("vault module Spec", function () {
+describe("socket module Spec", function () {
 
     let app: App, socket: Socket;
 
@@ -148,7 +148,7 @@ describe("vault module Spec", function () {
 
         result.should.be.eq("working");
 
-        setTimeout(() => socketProvider.sendToNamesapce("/middleware","test", "working2"));
+        setTimeout(() => socketProvider.sendToNamesapce("/middleware", "test", "working2"));
 
         let result2 = await new Promise(resolve => socket1.once("test", resolve));
 

@@ -22,7 +22,7 @@ class SocketController {
         return this._socket;
     }
     get id() {
-        return this._id;
+        return this._socket.id;
     }
     send(event, data) {
         this._socket && this._socket.emit(event, data);

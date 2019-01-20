@@ -5,9 +5,6 @@ import * as _ from "lodash";
 
 export abstract class SocketController {
 
-    protected _id: string;
-
-
     protected constructor(private _socket: socketIo.Socket, private _options: ControllerOptions) {
 
     }
@@ -39,7 +36,7 @@ export abstract class SocketController {
     }
 
     public get id() {
-        return this._id;
+        return this._socket.id;
     }
 
     public send(event: string, data: any) {

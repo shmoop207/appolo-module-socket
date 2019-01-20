@@ -12,14 +12,20 @@ describe("socket module Spec", function () {
     let app, socket;
     beforeEach(async () => {
         app = appolo_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8182 });
-        await app.module(new __1.SocketModule());
+        await app.module(new __1.SocketModule({ socket: { transports: ['polling', 'websocket'] } }));
         await app.launch();
     });
     afterEach(async () => {
         await app.reset();
     });
-    it("should load socket", async () => {
-        socket = io('http://localhost:8182', { transports: ['websocket'] });
+    it.only("should load socket", async () => {
+        socket = io('http://localhost:8182', { transports: ['polling', 'websocket'], transportOptions: {
+                polling: {
+                    extraHeaders: {
+                        'x-clientid': 'abc'
+                    }
+                }
+            } });
         await new Promise((resolve, reject) => {
             socket.on('connect', resolve);
             socket.on('connect_error', reject);

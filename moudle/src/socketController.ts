@@ -40,6 +40,7 @@ export abstract class SocketController {
     }
 
     public send(event: string, data: any) {
+
         this._socket && this._socket.emit(event, data);
     }
 

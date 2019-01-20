@@ -18,7 +18,7 @@ describe("socket module Spec", function () {
     beforeEach(async () => {
         app = createApp({root: __dirname + "/mock", environment: "production", port: 8182});
 
-        await app.module(new SocketModule());
+        await app.module(new SocketModule({socket:{transports: ['polling','websocket']}}));
 
 
         await app.launch();
@@ -29,9 +29,15 @@ describe("socket module Spec", function () {
         await app.reset();
     });
 
-    it("should load socket", async () => {
+    it.only("should load socket", async () => {
 
-        socket = io('http://localhost:8182', {transports: ['websocket']});
+        socket = io('http://localhost:8182', {transports: ['polling','websocket'],transportOptions: {
+                polling: {
+                    extraHeaders: {
+                        'x-clientid': 'abc'
+                    }
+                }
+            }});
 
         await new Promise((resolve, reject) => {
             socket.on('connect', resolve);

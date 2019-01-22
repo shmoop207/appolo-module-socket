@@ -2,7 +2,10 @@
   "name": "@appolo/socket",
   "version": "0.0.1",
   "description": "",
-  "keywords": ["appolo","socket"],
+  "keywords": [
+    "appolo",
+    "socket"
+  ],
   "main": "index.js",
   "publishConfig": {
     "access": "public"
@@ -50,5 +53,5 @@
   "author": {
     "name": "roman svichar"
   },
-  "license": ""
+  "license": "MIT"
 }

@@ -3,16 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const appolo_1 = require("appolo");
 const socketIo = require("socket.io");
-const redis = require("redis");
 const socketIoRedis = require("socket.io-redis");
 const _ = require("lodash");
 let SocketServer = class SocketServer {
     async get() {
         let io = socketIo(this.app.parent.server, _.defaults({}, this.moduleOptions.socket || {}, { "transports": ["websocket"] }));
         if (this.moduleOptions.redis) {
-            let pub = redis.createClient(this.moduleOptions.redis);
-            let sub = redis.createClient(this.moduleOptions.redis, { return_buffers: true });
-            io.adapter(socketIoRedis({ pubClient: pub, subClient: sub }));
+            io.adapter(socketIoRedis(this.moduleOptions.redis));
         }
         return io;
     }

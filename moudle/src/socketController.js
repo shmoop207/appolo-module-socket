@@ -6,17 +6,17 @@ class SocketController {
         this._socket = _socket;
         this._options = _options;
     }
-    initialize() {
+    async initialize() {
+        await this.onInitialized();
         _.forEach(this._options.actions, (eventName, action) => this._socket.on(eventName, this[action].bind(this)));
         this.socket.once("disconnect", this.onDisconnected.bind(this));
-        this.onInitialized();
-        this.onConnected();
+        await this.onConnected();
     }
-    onInitialized() {
+    async onInitialized() {
     }
-    onDisconnected() {
+    async onDisconnected() {
     }
-    onConnected() {
+    async onConnected() {
     }
     get socket() {
         return this._socket;

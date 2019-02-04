@@ -27,12 +27,12 @@ export class SocketProvider {
     public sendToAll(event: string, data: any): void {
 
         for (let namespace of this.socketManager.controllers.keys()){
-            this.sendToNamesapce(namespace,event,data)
+            this.sendToNamespace(namespace,event,data)
         }
 
     }
 
-    public sendToNamesapce(namespace: string, event: string, data: any): void {
+    public sendToNamespace(namespace: string, event: string, data: any): void {
         this.socketServer.of(namespace).emit(event, data);
     }
 

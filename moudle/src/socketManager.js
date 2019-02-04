@@ -10,7 +10,7 @@ let SocketManager = class SocketManager {
         this._clients = new Map();
     }
     initialize() {
-        _.forEach(this.app.parent.exportedClasses, (item => this._createSocketClient(item)));
+        _.forEach(this.app.parent.exported, (item => this._createSocketClient(item)));
         this.app.once(appolo_1.Events.BeforeReset, () => {
             this.socketServer.close();
         });
@@ -44,12 +44,12 @@ let SocketManager = class SocketManager {
             next(e);
         }
     }
-    _connectMiddleware(socket, next) {
+    async _connectMiddleware(socket, next) {
         try {
             let controller = this._controllers.get(socket.nsp.name);
             let options = Reflect.getOwnMetadata(decorators_1.SocketControllerSymbol, controller);
             let socketController = this.injector.get(controller, [socket, options]);
-            socketController.initialize();
+            await socketController.initialize();
             socket.once("disconnect", () => {
                 this._clients.delete(socket.id);
                 socket.removeAllListeners();

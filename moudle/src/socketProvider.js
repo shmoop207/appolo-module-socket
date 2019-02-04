@@ -13,10 +13,10 @@ let SocketProvider = class SocketProvider {
     }
     sendToAll(event, data) {
         for (let namespace of this.socketManager.controllers.keys()) {
-            this.sendToNamesapce(namespace, event, data);
+            this.sendToNamespace(namespace, event, data);
         }
     }
-    sendToNamesapce(namespace, event, data) {
+    sendToNamespace(namespace, event, data) {
         this.socketServer.of(namespace).emit(event, data);
     }
     get clients() {

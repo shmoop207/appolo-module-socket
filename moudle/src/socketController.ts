@@ -9,25 +9,28 @@ export abstract class SocketController {
 
     }
 
-    public initialize() {
+    public async initialize() {
+
+        await this.onInitialized();
+
         _.forEach(this._options.actions, (eventName, action) =>
             this._socket.on(eventName, this[action].bind(this)));
 
         this.socket.once("disconnect", this.onDisconnected.bind(this));
 
-        this.onInitialized();
-        this.onConnected();
+
+        await this.onConnected();
     }
 
-    protected onInitialized() {
-
-    }
-
-    protected onDisconnected() {
+    protected async onInitialized() {
 
     }
 
-    protected onConnected() {
+    protected async onDisconnected() {
+
+    }
+
+    protected async onConnected() {
 
     }
 

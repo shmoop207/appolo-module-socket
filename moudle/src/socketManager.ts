@@ -22,7 +22,7 @@ export class SocketManager {
 
     public initialize() {
 
-        _.forEach(this.app.parent.exportedClasses, (item => this._createSocketClient(item)));
+        _.forEach(this.app.parent.exported, (item => this._createSocketClient(item)));
 
         this.app.once(Events.BeforeReset, () => {
             this.socketServer.close()
@@ -72,7 +72,7 @@ export class SocketManager {
         }
     }
 
-    private _connectMiddleware(socket: socketIo.Socket, next: NextFn) {
+    private async _connectMiddleware(socket: socketIo.Socket, next: NextFn) {
         try {
             let controller = this._controllers.get(socket.nsp.name);
 
@@ -80,7 +80,7 @@ export class SocketManager {
 
             let socketController = this.injector.get<SocketController>(controller, [socket, options]);
 
-            socketController.initialize();
+            await socketController.initialize();
 
             socket.once("disconnect", () => {
                 this._clients.delete(socket.id);

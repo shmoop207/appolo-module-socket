@@ -29,7 +29,7 @@ describe("socket module Spec", function () {
         await app.reset();
     });
 
-    it.only("should load socket", async () => {
+    it("should load socket", async () => {
 
         socket = io('http://localhost:8182', {transports: ['polling','websocket'],transportOptions: {
                 polling: {
@@ -154,7 +154,7 @@ describe("socket module Spec", function () {
 
         result.should.be.eq("working");
 
-        setTimeout(() => socketProvider.sendToNamesapce("/middleware", "test", "working2"));
+        setTimeout(() => socketProvider.sendToNamespace("/middleware", "test", "working2"));
 
         let result2 = await new Promise(resolve => socket1.once("test", resolve));
 

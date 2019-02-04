@@ -1,5 +1,5 @@
 
-Socket module for appolo build with [socket.io](https://socket.io/)
+Socket module for [`appolo`](http://www.appolojs.com) build with [socket.io](https://socket.io/)
 
 ## Installation
 

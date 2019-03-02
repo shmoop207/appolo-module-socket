@@ -7,7 +7,7 @@ const socketIoRedis = require("socket.io-redis");
 const _ = require("lodash");
 let SocketServer = class SocketServer {
     async get() {
-        let io = socketIo(this.app.parent.server, _.defaults({}, this.moduleOptions.socket || {}, { "transports": ["websocket"] }));
+        let io = socketIo(this.app.parent.server, _.defaults({}, this.moduleOptions.socket || {}, { "transports": ['polling', 'websocket'] }));
         if (this.moduleOptions.redis) {
             io.adapter(socketIoRedis(this.moduleOptions.redis));
         }

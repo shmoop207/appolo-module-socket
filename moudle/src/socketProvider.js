@@ -16,8 +16,16 @@ let SocketProvider = class SocketProvider {
             this.sendToNamespace(namespace, event, data);
         }
     }
+    sendToRoom(room, event, data) {
+        for (let namespace of this.socketManager.controllers.keys()) {
+            this.sendToNamespaceRoom(namespace, room, event, data);
+        }
+    }
     sendToNamespace(namespace, event, data) {
         this.socketServer.of(namespace).emit(event, data);
+    }
+    sendToNamespaceRoom(namespace, room, event, data) {
+        this.socketServer.of(namespace).in(room).emit(event, data);
     }
     get clients() {
         return this.socketManager.clients;

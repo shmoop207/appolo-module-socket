@@ -1,6 +1,6 @@
 {
   "name": "@appolo/socket",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "keywords": [
     "appolo",
@@ -15,7 +15,7 @@
     "prepublish": "npm test"
   },
   "dependencies": {
-    "appolo": "^6.0.59",
+    "appolo": "^6.0.60",
     "bluebird": "^3.5.1",
     "lodash": "^4.17.10",
     "redis": "^2.8.0",

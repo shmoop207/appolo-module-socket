@@ -10,7 +10,11 @@ let SocketManager = class SocketManager {
         this._clients = new Map();
     }
     initialize() {
-        _.forEach(this.app.parent.exported, (item => this._createSocketClient(item)));
+        let parent = this.app;
+        while (parent != null) {
+            _.forEach(parent.exported, (item => this._createSocketClient(item)));
+            parent = parent.parent;
+        }
         this.app.once(appolo_1.Events.BeforeReset, () => {
             this.socketServer.close();
         });

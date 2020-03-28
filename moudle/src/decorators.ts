@@ -3,7 +3,7 @@ import {define, Util} from 'appolo';
 import * as _ from 'lodash';
 import {ControllerOptions, MiddlewareTypes} from "./interfaces";
 
-export const SocketControllerSymbol = Symbol("SocketController");
+export const SocketControllerSymbol = "__SocketController__";
 
 
 export function socket(namespace?: string) {

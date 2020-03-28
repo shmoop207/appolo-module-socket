@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const appolo_1 = require("appolo");
 const _ = require("lodash");
-exports.SocketControllerSymbol = Symbol("SocketController");
+exports.SocketControllerSymbol = "__SocketController__";
 function socket(namespace) {
     return function (fn) {
         let data = appolo_1.Util.getReflectData(exports.SocketControllerSymbol, fn, {});

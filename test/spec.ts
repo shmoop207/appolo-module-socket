@@ -4,6 +4,7 @@ import * as io from 'socket.io-client';
 import chai = require('chai');
 import chaiHttp = require('chai-http');
 import Socket = SocketIOClient.Socket;
+import {SocketServer} from "../moudle/src/socketServer";
 
 chai.use(chaiHttp);
 

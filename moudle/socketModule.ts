@@ -9,6 +9,10 @@ export class SocketModule extends Module<IOptions> {
         super(options)
     }
 
+    public static for(options?: IOptions): SocketModule {
+        return new SocketModule(options)
+    }
+
     protected readonly Defaults: Partial<IOptions> = {id: "socketProvider", auto: true};
 
     public get exports() {

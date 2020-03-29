@@ -1,12 +1,16 @@
 import {App, createApp} from 'appolo'
 import {SocketModule, SocketProvider} from "../";
 import * as io from 'socket.io-client';
+import {Promises} from 'appolo-utils';
 import chai = require('chai');
+import sinon = require('sinon');
+import sinonChai = require('sinon-chai');
 import chaiHttp = require('chai-http');
 import Socket = SocketIOClient.Socket;
 import {SocketServer} from "../moudle/src/socketServer";
 
 chai.use(chaiHttp);
+chai.use(sinonChai);
 
 let should = require('chai').should();
 //chai.use(sinonChai);
@@ -19,7 +23,7 @@ describe("socket module Spec", function () {
     beforeEach(async () => {
         app = createApp({root: __dirname + "/mock", environment: "production", port: 8182});
 
-        await app.module(new SocketModule({socket:{transports: ['polling','websocket']}}));
+        await app.module(new SocketModule({socket: {transports: ['polling', 'websocket']}}));
 
 
         await app.launch();
@@ -32,13 +36,15 @@ describe("socket module Spec", function () {
 
     it("should load socket", async () => {
 
-        socket = io('http://localhost:8182', {transports: ['polling','websocket'],transportOptions: {
+        socket = io('http://localhost:8182', {
+            transports: ['polling', 'websocket'], transportOptions: {
                 polling: {
                     extraHeaders: {
                         'x-clientid': 'abc'
                     }
                 }
-            }});
+            }
+        });
 
         await new Promise((resolve, reject) => {
             socket.on('connect', resolve);
@@ -88,7 +94,7 @@ describe("socket module Spec", function () {
 
         socket.disconnect();
 
-    })
+    });
 
     it("should load socket with middleware invalid", async () => {
 
@@ -96,13 +102,13 @@ describe("socket module Spec", function () {
 
         let err = await new Promise((resolve, reject) => {
             socket.on("error", resolve)
-        })
+        });
 
         err.should.be.eq("invalid token");
 
         socket.disconnect();
 
-    })
+    });
 
     it("should have 2 sockets", async () => {
 
@@ -131,7 +137,7 @@ describe("socket module Spec", function () {
         socket1.disconnect();
         socket2.disconnect();
 
-    })
+    });
 
     it("should have socket provider", async () => {
 
@@ -164,7 +170,38 @@ describe("socket module Spec", function () {
 
         socket1.disconnect();
 
-    })
+    });
+
+    it("should messages with redis", async () => {
+        let redis = process.env.REDIS;
+
+        let app = createApp({root: __dirname + "/mock", environment: "production", port: 8184});
+        let app2 = createApp({root: __dirname + "/mock", environment: "production", port: 8183});
+        await app.module(new SocketModule({redis, socket: {transports: ['polling', 'websocket']}}));
+        await app2.module(new SocketModule({redis, socket: {transports: ['polling', 'websocket']}}));
+
+
+        await app.launch();
+        await app2.launch();
+
+        let socket = io('http://localhost:8184/multi', {transports: ['websocket'], forceNew: true});
+        let socket2 = io('http://localhost:8183/multi', {transports: ['websocket'], forceNew: true});
+
+        let spy = sinon.spy();
+        let spy2 = sinon.spy();
+
+        socket2.on("test", spy2);
+
+        socket.on("test", spy);
+
+        await new Promise(resolve => socket.emit("multi", "aaa", resolve));
+
+        await Promises.delay(1000);
+        spy.should.have.been.called;
+        spy2.should.have.been.called;
+        await app.reset();
+        await app2.reset();
+    });
 
 });
 

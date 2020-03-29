@@ -3,9 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const appolo_1 = require("appolo");
 const __1 = require("../");
 const io = require("socket.io-client");
+const appolo_utils_1 = require("appolo-utils");
 const chai = require("chai");
+const sinon = require("sinon");
+const sinonChai = require("sinon-chai");
 const chaiHttp = require("chai-http");
 chai.use(chaiHttp);
+chai.use(sinonChai);
 let should = require('chai').should();
 //chai.use(sinonChai);
 describe("socket module Spec", function () {
@@ -19,13 +23,15 @@ describe("socket module Spec", function () {
         await app.reset();
     });
     it("should load socket", async () => {
-        socket = io('http://localhost:8182', { transports: ['polling', 'websocket'], transportOptions: {
+        socket = io('http://localhost:8182', {
+            transports: ['polling', 'websocket'], transportOptions: {
                 polling: {
                     extraHeaders: {
                         'x-clientid': 'abc'
                     }
                 }
-            } });
+            }
+        });
         await new Promise((resolve, reject) => {
             socket.on('connect', resolve);
             socket.on('connect_error', reject);
@@ -100,6 +106,27 @@ describe("socket module Spec", function () {
         let result2 = await new Promise(resolve => socket1.once("test", resolve));
         result2.should.be.eq("working2");
         socket1.disconnect();
+    });
+    it("should messages with redis", async () => {
+        let redis = process.env.REDIS;
+        let app = appolo_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8184 });
+        let app2 = appolo_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8183 });
+        await app.module(new __1.SocketModule({ redis, socket: { transports: ['polling', 'websocket'] } }));
+        await app2.module(new __1.SocketModule({ redis, socket: { transports: ['polling', 'websocket'] } }));
+        await app.launch();
+        await app2.launch();
+        let socket = io('http://localhost:8184/multi', { transports: ['websocket'], forceNew: true });
+        let socket2 = io('http://localhost:8183/multi', { transports: ['websocket'], forceNew: true });
+        let spy = sinon.spy();
+        let spy2 = sinon.spy();
+        socket2.on("test", spy2);
+        socket.on("test", spy);
+        await new Promise(resolve => socket.emit("multi", "aaa", resolve));
+        await appolo_utils_1.Promises.delay(1000);
+        spy.should.have.been.called;
+        spy2.should.have.been.called;
+        await app.reset();
+        await app2.reset();
     });
 });
 //# sourceMappingURL=spec.js.map

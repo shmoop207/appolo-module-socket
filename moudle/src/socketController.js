@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
+exports.SocketController = void 0;
 class SocketController {
     constructor(_socket, _options) {
         this._socket = _socket;
@@ -8,7 +8,10 @@ class SocketController {
     }
     async initialize() {
         await this.onInitialized();
-        _.forEach(this._options.actions, (eventName, action) => this._socket.on(eventName, this[action].bind(this)));
+        Object.keys(this._options.actions).forEach(action => {
+            let eventName = this._options.actions[action];
+            this._socket.on(eventName, this[action].bind(this));
+        });
         this.socket.once("disconnect", this.onDisconnected.bind(this));
         await this.onConnected();
     }

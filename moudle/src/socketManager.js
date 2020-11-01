@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SocketManager = void 0;
 const tslib_1 = require("tslib");
-const appolo_1 = require("appolo");
-const _ = require("lodash");
+const inject_1 = require("@appolo/inject");
+const utils_1 = require("@appolo/utils");
 const decorators_1 = require("./decorators");
 let SocketManager = class SocketManager {
     constructor() {
@@ -12,10 +13,10 @@ let SocketManager = class SocketManager {
     initialize() {
         let parent = this.app;
         while (parent != null) {
-            _.forEach(parent.exported, (item => this._createSocketClient(item)));
-            parent = parent.parent;
+            parent.discovery.exported.forEach(item => this._createSocketClient(item));
+            parent = parent.tree.parent;
         }
-        this.app.once(appolo_1.Events.BeforeReset, () => {
+        this.app.event.beforeReset.on(() => {
             this.socketServer.close();
         });
     }
@@ -35,9 +36,9 @@ let SocketManager = class SocketManager {
         }
         this._controllers.set(opts.namespace, item.fn);
         //convert middlewares
-        let middlewares = _.map(opts.middlewares, (middleware) => _.isString(middleware) ? this._invokeMiddleWare.bind(this, middleware) : middleware);
+        let middlewares = (opts.middlewares || []).map(middleware => utils_1.Strings.isString(middleware) ? this._invokeMiddleWare.bind(this, middleware) : middleware);
         middlewares.push(this._connectMiddleware.bind(this));
-        _.forEach(middlewares, (middleware) => this.socketServer.of(opts.namespace).use(middleware));
+        (middlewares || []).forEach(middleware => this.socketServer.of(opts.namespace).use(middleware));
     }
     _invokeMiddleWare(middlewareId, socket, next) {
         try {
@@ -67,20 +68,20 @@ let SocketManager = class SocketManager {
     }
 };
 tslib_1.__decorate([
-    appolo_1.inject()
+    inject_1.inject()
 ], SocketManager.prototype, "socketServer", void 0);
 tslib_1.__decorate([
-    appolo_1.inject()
+    inject_1.inject()
 ], SocketManager.prototype, "moduleOptions", void 0);
 tslib_1.__decorate([
-    appolo_1.inject()
+    inject_1.inject()
 ], SocketManager.prototype, "injector", void 0);
 tslib_1.__decorate([
-    appolo_1.inject()
+    inject_1.inject()
 ], SocketManager.prototype, "app", void 0);
 SocketManager = tslib_1.__decorate([
-    appolo_1.define(),
-    appolo_1.singleton()
+    inject_1.define(),
+    inject_1.singleton()
 ], SocketManager);
 exports.SocketManager = SocketManager;
 //# sourceMappingURL=socketManager.js.map

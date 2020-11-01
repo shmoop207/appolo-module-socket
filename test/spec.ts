@@ -1,7 +1,7 @@
-import {App, createApp} from 'appolo'
+import {App, createApp} from '@appolo/core'
 import {SocketModule, SocketProvider} from "../";
 import * as io from 'socket.io-client';
-import {Promises} from 'appolo-utils';
+import {Promises} from '@appolo/utils';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -23,7 +23,7 @@ describe("socket module Spec", function () {
     beforeEach(async () => {
         app = createApp({root: __dirname + "/mock", environment: "production", port: 8182});
 
-        await app.module(new SocketModule({socket: {transports: ['polling', 'websocket']}}));
+        app.module.use( SocketModule.for({socket: {transports: ['polling', 'websocket']}}));
 
 
         await app.launch();
@@ -177,8 +177,8 @@ describe("socket module Spec", function () {
 
         let app = createApp({root: __dirname + "/mock", environment: "production", port: 8184});
         let app2 = createApp({root: __dirname + "/mock", environment: "production", port: 8183});
-        await app.module(new SocketModule({redis, socket: {transports: ['polling', 'websocket']}}));
-        await app2.module(new SocketModule({redis, socket: {transports: ['polling', 'websocket']}}));
+         app.module.use( SocketModule.for({redis, socket: {transports: ['polling', 'websocket']}}));
+         app2.module.use( SocketModule.for({redis, socket: {transports: ['polling', 'websocket']}}));
 
 
         await app.launch();
@@ -196,7 +196,7 @@ describe("socket module Spec", function () {
 
         await new Promise(resolve => socket.emit("multi", "aaa", resolve));
 
-        await Promises.delay(1000);
+        await Promises.delay(4000);
         spy.should.have.been.called;
         spy2.should.have.been.called;
         await app.reset();

@@ -1,7 +1,8 @@
 import {IMiddleware} from "../../../index";
 import * as socketIo from "socket.io";
 
-import {define, NextFn} from "appolo/index";
+import {define} from "@appolo/inject";
+import { NextFn} from "@appolo/route";
 
 @define()
 export class TokenMiddleware implements IMiddleware {

@@ -1,5 +1,5 @@
 import {action, socket, SocketController, SocketProvider} from "../../../index";
-import {inject} from "appolo";
+import {inject} from "@appolo/inject";
 
 @socket("/multi")
 export class MultiSocketTestController extends SocketController {

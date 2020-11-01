@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MiddlewareTestController = void 0;
 const tslib_1 = require("tslib");
 const index_1 = require("../../../index");
 const tokenMiddleware_1 = require("./tokenMiddleware");
 let MiddlewareTestController = class MiddlewareTestController extends index_1.SocketController {
-    onConnected() {
+    async onConnected() {
         this.user = this.socket.request.user;
     }
     test(name) {

@@ -1,4 +1,4 @@
-import {define, initMethod, inject, singleton} from "appolo/index";
+import {define, init, inject, singleton} from "@appolo/inject";
 import * as socketIo from "socket.io";
 import {IOptions} from "../IOptions";
 import {SocketManager} from "./socketManager";
@@ -12,7 +12,7 @@ export class SocketProvider {
     @inject() private moduleOptions: IOptions;
 
 
-    @initMethod()
+    @init()
     private _init() {
         if (this.moduleOptions.auto) {
             this.initialize();

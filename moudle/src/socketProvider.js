@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SocketProvider = void 0;
 const tslib_1 = require("tslib");
-const index_1 = require("appolo/index");
+const inject_1 = require("@appolo/inject");
 let SocketProvider = class SocketProvider {
     _init() {
         if (this.moduleOptions.auto) {
@@ -32,20 +33,20 @@ let SocketProvider = class SocketProvider {
     }
 };
 tslib_1.__decorate([
-    index_1.inject()
+    inject_1.inject()
 ], SocketProvider.prototype, "socketServer", void 0);
 tslib_1.__decorate([
-    index_1.inject()
+    inject_1.inject()
 ], SocketProvider.prototype, "socketManager", void 0);
 tslib_1.__decorate([
-    index_1.inject()
+    inject_1.inject()
 ], SocketProvider.prototype, "moduleOptions", void 0);
 tslib_1.__decorate([
-    index_1.initMethod()
+    inject_1.init()
 ], SocketProvider.prototype, "_init", null);
 SocketProvider = tslib_1.__decorate([
-    index_1.define(),
-    index_1.singleton()
+    inject_1.define(),
+    inject_1.singleton()
 ], SocketProvider);
 exports.SocketProvider = SocketProvider;
 //# sourceMappingURL=socketProvider.js.map

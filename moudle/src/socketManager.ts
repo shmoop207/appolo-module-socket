@@ -1,7 +1,9 @@
 "use strict";
-import {define, Events, IApp, initMethod, inject, Injector, NextFn, singleton} from 'appolo'
+import {define, init, inject, Injector, singleton} from '@appolo/inject'
+import {NextFn} from '@appolo/route'
+import {IApp} from '@appolo/core'
+import {Strings} from '@appolo/utils'
 import * as socketIo from "socket.io";
-import * as _ from "lodash";
 import {SocketController} from "./socketController";
 import {IOptions} from "../IOptions";
 import {SocketControllerSymbol} from "./decorators";
@@ -25,11 +27,11 @@ export class SocketManager {
         let parent = this.app;
 
         while (parent != null) {
-            _.forEach(parent.exported, (item => this._createSocketClient(item)));
-            parent = parent.parent;
+            parent.discovery.exported.forEach(item => this._createSocketClient(item));
+            parent = parent.tree.parent as IApp;
         }
 
-        this.app.once(Events.BeforeReset, () => {
+        this.app.event.beforeReset.on(() => {
             this.socketServer.close()
         })
     }
@@ -56,12 +58,12 @@ export class SocketManager {
         this._controllers.set(opts.namespace, item.fn as typeof SocketController);
 
         //convert middlewares
-        let middlewares = _.map(opts.middlewares, (middleware) =>
-            _.isString(middleware) ? this._invokeMiddleWare.bind(this, middleware) : middleware);
+        let middlewares = (opts.middlewares || []).map(middleware =>
+            Strings.isString(middleware) ? this._invokeMiddleWare.bind(this, middleware) : middleware);
 
         middlewares.push(this._connectMiddleware.bind(this));
 
-        _.forEach(middlewares, (middleware) =>
+        (middlewares || []).forEach(middleware =>
             this.socketServer.of(opts.namespace).use(middleware as MiddlewareFn))
 
     }

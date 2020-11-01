@@ -6,7 +6,7 @@ import {TokenMiddleware} from "./tokenMiddleware";
 export class MiddlewareTestController extends SocketController {
 
     private user:any;
-    onConnected(){
+    async onConnected(){
 
         this.user = this.socket.request.user
     }

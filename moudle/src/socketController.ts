@@ -1,7 +1,6 @@
 "use strict";
 import * as socketIo from "socket.io";
 import {ControllerOptions} from "./interfaces";
-import * as _ from "lodash";
 
 export abstract class SocketController {
 
@@ -13,8 +12,10 @@ export abstract class SocketController {
 
         await this.onInitialized();
 
-        _.forEach(this._options.actions, (eventName, action) =>
-            this._socket.on(eventName, this[action].bind(this)));
+        Object.keys(this._options.actions).forEach(  action => {
+            let eventName = this._options.actions[action];
+            this._socket.on(eventName, this[action].bind(this))
+        })
 
         this.socket.once("disconnect", this.onDisconnected.bind(this));
 

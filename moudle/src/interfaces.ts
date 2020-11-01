@@ -1,5 +1,5 @@
 import * as socketIo from "socket.io";
-import {NextFn} from 'appolo'
+import {NextFn} from '@appolo/route'
 
 export type MiddlewareTypes = string | IMiddlewareCtr | MiddlewareFn
 

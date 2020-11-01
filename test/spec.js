@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const appolo_1 = require("appolo");
+const core_1 = require("@appolo/core");
 const __1 = require("../");
 const io = require("socket.io-client");
-const appolo_utils_1 = require("appolo-utils");
+const utils_1 = require("@appolo/utils");
 const chai = require("chai");
 const sinon = require("sinon");
 const sinonChai = require("sinon-chai");
@@ -15,8 +15,8 @@ let should = require('chai').should();
 describe("socket module Spec", function () {
     let app, socket;
     beforeEach(async () => {
-        app = appolo_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8182 });
-        await app.module(new __1.SocketModule({ socket: { transports: ['polling', 'websocket'] } }));
+        app = core_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8182 });
+        app.module.use(__1.SocketModule.for({ socket: { transports: ['polling', 'websocket'] } }));
         await app.launch();
     });
     afterEach(async () => {
@@ -109,10 +109,10 @@ describe("socket module Spec", function () {
     });
     it("should messages with redis", async () => {
         let redis = process.env.REDIS;
-        let app = appolo_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8184 });
-        let app2 = appolo_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8183 });
-        await app.module(new __1.SocketModule({ redis, socket: { transports: ['polling', 'websocket'] } }));
-        await app2.module(new __1.SocketModule({ redis, socket: { transports: ['polling', 'websocket'] } }));
+        let app = core_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8184 });
+        let app2 = core_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8183 });
+        app.module.use(__1.SocketModule.for({ redis, socket: { transports: ['polling', 'websocket'] } }));
+        app2.module.use(__1.SocketModule.for({ redis, socket: { transports: ['polling', 'websocket'] } }));
         await app.launch();
         await app2.launch();
         let socket = io('http://localhost:8184/multi', { transports: ['websocket'], forceNew: true });
@@ -122,7 +122,7 @@ describe("socket module Spec", function () {
         socket2.on("test", spy2);
         socket.on("test", spy);
         await new Promise(resolve => socket.emit("multi", "aaa", resolve));
-        await appolo_utils_1.Promises.delay(1000);
+        await utils_1.Promises.delay(4000);
         spy.should.have.been.called;
         spy2.should.have.been.called;
         await app.reset();

@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {define, Util} from 'appolo';
-import * as _ from 'lodash';
+import {define} from '@appolo/inject';
+import {Reflector, Classes,Strings,Functions} from '@appolo/utils';
 import {ControllerOptions, MiddlewareTypes} from "./interfaces";
 
 export const SocketControllerSymbol = "__SocketController__";
@@ -9,7 +9,7 @@ export const SocketControllerSymbol = "__SocketController__";
 export function socket(namespace?: string) {
     return function (fn: any) {
 
-        let data = Util.getReflectData<ControllerOptions>(SocketControllerSymbol, fn, {});
+        let data = Reflector.getFnMetadata<ControllerOptions>(SocketControllerSymbol, fn, {});
 
         data.namespace = namespace || "/";
 
@@ -20,11 +20,11 @@ export function socket(namespace?: string) {
 export function middleware(middleware?: MiddlewareTypes) {
     return function (fn: any) {
 
-        if (Util.isClass(middleware)) {
-            middleware = _.camelCase((middleware as Function).name)
+        if (Classes.isClass(middleware)) {
+            middleware = Classes.className(middleware as Function)
         }
 
-        let data = Util.getReflectData<ControllerOptions>(SocketControllerSymbol, fn, {});
+        let data = Reflector.getFnMetadata<ControllerOptions>(SocketControllerSymbol, fn, {});
 
         (data.middlewares || (data.middlewares = [])).push(middleware);
     }
@@ -33,7 +33,7 @@ export function middleware(middleware?: MiddlewareTypes) {
 export function action(eventName?: string) {
     return function (target: any, propertyKey: string, descriptor?: PropertyDescriptor) {
 
-        let data = Util.getReflectData<ControllerOptions>(SocketControllerSymbol, target.constructor, {});
+        let data = Reflector.getFnMetadata<ControllerOptions>(SocketControllerSymbol, target.constructor, {});
 
         data.actions = data.actions || (data.actions = {});
 

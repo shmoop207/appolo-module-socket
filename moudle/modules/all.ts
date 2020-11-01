@@ -1,4 +1,4 @@
-import {App} from 'appolo';
+import {App} from '@appolo/core';
 import {resolve} from 'path';
 
 import {IOptions} from "../IOptions";

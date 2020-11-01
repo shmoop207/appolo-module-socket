@@ -1,30 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.action = exports.middleware = exports.socket = exports.SocketControllerSymbol = void 0;
 require("reflect-metadata");
-const appolo_1 = require("appolo");
-const _ = require("lodash");
+const inject_1 = require("@appolo/inject");
+const utils_1 = require("@appolo/utils");
 exports.SocketControllerSymbol = "__SocketController__";
 function socket(namespace) {
     return function (fn) {
-        let data = appolo_1.Util.getReflectData(exports.SocketControllerSymbol, fn, {});
+        let data = utils_1.Reflector.getFnMetadata(exports.SocketControllerSymbol, fn, {});
         data.namespace = namespace || "/";
-        appolo_1.define()(fn);
+        inject_1.define()(fn);
     };
 }
 exports.socket = socket;
 function middleware(middleware) {
     return function (fn) {
-        if (appolo_1.Util.isClass(middleware)) {
-            middleware = _.camelCase(middleware.name);
+        if (utils_1.Classes.isClass(middleware)) {
+            middleware = utils_1.Classes.className(middleware);
         }
-        let data = appolo_1.Util.getReflectData(exports.SocketControllerSymbol, fn, {});
+        let data = utils_1.Reflector.getFnMetadata(exports.SocketControllerSymbol, fn, {});
         (data.middlewares || (data.middlewares = [])).push(middleware);
     };
 }
 exports.middleware = middleware;
 function action(eventName) {
     return function (target, propertyKey, descriptor) {
-        let data = appolo_1.Util.getReflectData(exports.SocketControllerSymbol, target.constructor, {});
+        let data = utils_1.Reflector.getFnMetadata(exports.SocketControllerSymbol, target.constructor, {});
         data.actions = data.actions || (data.actions = {});
         data.actions[propertyKey] = eventName || propertyKey;
         let oldFn = descriptor.value;

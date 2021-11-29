@@ -32,21 +32,21 @@ let SocketProvider = class SocketProvider {
         return this.socketManager.clients;
     }
 };
-tslib_1.__decorate([
-    inject_1.inject()
+(0, tslib_1.__decorate)([
+    (0, inject_1.inject)()
 ], SocketProvider.prototype, "socketServer", void 0);
-tslib_1.__decorate([
-    inject_1.inject()
+(0, tslib_1.__decorate)([
+    (0, inject_1.inject)()
 ], SocketProvider.prototype, "socketManager", void 0);
-tslib_1.__decorate([
-    inject_1.inject()
+(0, tslib_1.__decorate)([
+    (0, inject_1.inject)()
 ], SocketProvider.prototype, "moduleOptions", void 0);
-tslib_1.__decorate([
-    inject_1.init()
+(0, tslib_1.__decorate)([
+    (0, inject_1.init)()
 ], SocketProvider.prototype, "_init", null);
-SocketProvider = tslib_1.__decorate([
-    inject_1.define(),
-    inject_1.singleton()
+SocketProvider = (0, tslib_1.__decorate)([
+    (0, inject_1.define)(),
+    (0, inject_1.singleton)()
 ], SocketProvider);
 exports.SocketProvider = SocketProvider;
 //# sourceMappingURL=socketProvider.js.map

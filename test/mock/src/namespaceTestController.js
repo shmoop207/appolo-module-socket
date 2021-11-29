@@ -8,11 +8,11 @@ let NamespaceTestController = class NamespaceTestController extends index_1.Sock
         return { name, action: "NamespaceTestController" };
     }
 };
-tslib_1.__decorate([
-    index_1.action("foo")
+(0, tslib_1.__decorate)([
+    (0, index_1.action)("foo")
 ], NamespaceTestController.prototype, "test", null);
-NamespaceTestController = tslib_1.__decorate([
-    index_1.socket("/foo")
+NamespaceTestController = (0, tslib_1.__decorate)([
+    (0, index_1.socket)("/foo")
 ], NamespaceTestController);
 exports.NamespaceTestController = NamespaceTestController;
 //# sourceMappingURL=namespaceTestController.js.map

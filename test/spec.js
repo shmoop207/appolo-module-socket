@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@appolo/core");
 const __1 = require("../");
-const io = require("socket.io-client");
+const socket_io_client_1 = require("socket.io-client");
 const utils_1 = require("@appolo/utils");
 const chai = require("chai");
 const sinon = require("sinon");
@@ -15,7 +15,7 @@ let should = require('chai').should();
 describe("socket module Spec", function () {
     let app, socket;
     beforeEach(async () => {
-        app = core_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8182 });
+        app = (0, core_1.createApp)({ root: __dirname + "/mock", environment: "production", port: 8182 });
         app.module.use(__1.SocketModule.for({ socket: { transports: ['polling', 'websocket'] } }));
         await app.launch();
     });
@@ -23,7 +23,7 @@ describe("socket module Spec", function () {
         await app.reset();
     });
     it("should load socket", async () => {
-        socket = io('http://localhost:8182', {
+        socket = (0, socket_io_client_1.io)('http://localhost:8182', {
             transports: ['polling', 'websocket'], transportOptions: {
                 polling: {
                     extraHeaders: {
@@ -44,7 +44,7 @@ describe("socket module Spec", function () {
         socket.disconnect();
     });
     it("should load socket with namespace", async () => {
-        socket = io('http://localhost:8182/foo', { transports: ['websocket'], forceNew: true });
+        socket = (0, socket_io_client_1.io)('http://localhost:8182/foo', { transports: ['websocket'], forceNew: true });
         let data = await new Promise(resolve => {
             socket.emit("foo", "ping", resolve);
         });
@@ -53,7 +53,7 @@ describe("socket module Spec", function () {
         socket.disconnect();
     });
     it("should load socket with middleware", async () => {
-        socket = io('http://localhost:8182/middleware', { transports: ['websocket'], forceNew: true, query: { token: 1 } });
+        socket = (0, socket_io_client_1.io)('http://localhost:8182/middleware', { transports: ['websocket'], forceNew: true, query: { token: 1 } });
         let data = await new Promise(resolve => {
             socket.emit("middle", "ping", resolve);
         });
@@ -63,24 +63,26 @@ describe("socket module Spec", function () {
         socket.disconnect();
     });
     it("should load socket with middleware invalid", async () => {
-        socket = io('http://localhost:8182/middleware', { transports: ['websocket'], forceNew: true, query: { token: 2 } });
+        socket = (0, socket_io_client_1.io)('http://localhost:8182/middleware', { transports: ['websocket'], forceNew: true, query: { token: 2 } });
         let err = await new Promise((resolve, reject) => {
-            socket.on("error", resolve);
+            socket.on("connect_error", (e) => {
+                resolve(e);
+            });
         });
-        err.should.be.eq("invalid token");
+        err.message.should.be.eq("invalid token");
         socket.disconnect();
     });
     it("should have 2 sockets", async () => {
-        let socket1 = io('http://localhost:8182/middleware', {
+        let socket1 = (0, socket_io_client_1.io)('http://localhost:8182/middleware', {
             transports: ['websocket'],
             forceNew: true,
             query: { token: 1 }
         });
-        let socket2 = io('http://localhost:8182/foo', { transports: ['websocket'], forceNew: true, query: { token: 2 } });
+        let socket2 = (0, socket_io_client_1.io)('http://localhost:8182/foo', { transports: ['websocket'], forceNew: true, query: { token: 2 } });
         let [data1, data2] = await Promise.all([new Promise(resolve => {
-                socket1.emit("middle", "ping", resolve);
+                socket1.emit("middle", "ping", (data) => resolve(data));
             }), new Promise(resolve => {
-                socket2.emit("foo", "ping", resolve);
+                socket2.emit("foo", "ping", (data) => resolve(data));
             })]);
         data2.name.should.be.eq("ping");
         data2.action.should.be.eq("NamespaceTestController");
@@ -91,14 +93,14 @@ describe("socket module Spec", function () {
         socket2.disconnect();
     });
     it("should have socket provider", async () => {
-        let socket1 = io('http://localhost:8182/middleware', {
+        let socket1 = (0, socket_io_client_1.io)('http://localhost:8182/middleware', {
             transports: ['websocket'],
             forceNew: true,
             query: { token: 1 }
         });
         await new Promise(resolve => socket1.on("connect", resolve));
         let socketProvider = app.injector.get(__1.SocketProvider);
-        socketProvider.clients.size.should.eq(2);
+        socketProvider.clients.size.should.eq(1);
         setTimeout(() => socketProvider.sendToAll("test", "working"));
         let result = await new Promise(resolve => socket1.once("test", resolve));
         result.should.be.eq("working");
@@ -109,20 +111,20 @@ describe("socket module Spec", function () {
     });
     it("should messages with redis", async () => {
         let redis = process.env.REDIS;
-        let app = core_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8184 });
-        let app2 = core_1.createApp({ root: __dirname + "/mock", environment: "production", port: 8183 });
+        let app = (0, core_1.createApp)({ root: __dirname + "/mock", environment: "production", port: 8184 });
+        let app2 = (0, core_1.createApp)({ root: __dirname + "/mock", environment: "production", port: 8183 });
         app.module.use(__1.SocketModule.for({ redis, socket: { transports: ['polling', 'websocket'] } }));
         app2.module.use(__1.SocketModule.for({ redis, socket: { transports: ['polling', 'websocket'] } }));
         await app.launch();
         await app2.launch();
-        let socket = io('http://localhost:8184/multi', { transports: ['websocket'], forceNew: true });
-        let socket2 = io('http://localhost:8183/multi', { transports: ['websocket'], forceNew: true });
+        let socket = (0, socket_io_client_1.io)('http://localhost:8184/multi', { transports: ['websocket'], forceNew: true });
+        let socket2 = (0, socket_io_client_1.io)('http://localhost:8183/multi', { transports: ['websocket'], forceNew: true });
         let spy = sinon.spy();
         let spy2 = sinon.spy();
         socket2.on("test", spy2);
         socket.on("test", spy);
         await new Promise(resolve => socket.emit("multi", "aaa", resolve));
-        await utils_1.Promises.delay(4000);
+        await utils_1.Promises.delay(8000);
         spy.should.have.been.called;
         spy2.should.have.been.called;
         await app.reset();

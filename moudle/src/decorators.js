@@ -9,7 +9,7 @@ function socket(namespace) {
     return function (fn) {
         let data = utils_1.Reflector.getFnMetadata(exports.SocketControllerSymbol, fn, {});
         data.namespace = namespace || "/";
-        inject_1.define()(fn);
+        (0, inject_1.define)()(fn);
     };
 }
 exports.socket = socket;

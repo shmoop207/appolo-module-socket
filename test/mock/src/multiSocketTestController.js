@@ -13,14 +13,14 @@ let MultiSocketTestController = class MultiSocketTestController extends index_1.
         return { name, action: "MultiSocketTestController" };
     }
 };
-tslib_1.__decorate([
-    inject_1.inject()
+(0, tslib_1.__decorate)([
+    (0, inject_1.inject)()
 ], MultiSocketTestController.prototype, "socketProvider", void 0);
-tslib_1.__decorate([
-    index_1.action("multi")
+(0, tslib_1.__decorate)([
+    (0, index_1.action)("multi")
 ], MultiSocketTestController.prototype, "test", null);
-MultiSocketTestController = tslib_1.__decorate([
-    index_1.socket("/multi")
+MultiSocketTestController = (0, tslib_1.__decorate)([
+    (0, index_1.socket)("/multi")
 ], MultiSocketTestController);
 exports.MultiSocketTestController = MultiSocketTestController;
 //# sourceMappingURL=multiSocketTestController.js.map

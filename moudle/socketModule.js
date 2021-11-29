@@ -17,8 +17,8 @@ let SocketModule = SocketModule_1 = class SocketModule extends engine_1.Module {
         return [{ id: this.moduleOptions.id, type: socketProvider_1.SocketProvider }];
     }
 };
-SocketModule = SocketModule_1 = tslib_1.__decorate([
-    engine_1.module()
+SocketModule = SocketModule_1 = (0, tslib_1.__decorate)([
+    (0, engine_1.module)()
 ], SocketModule);
 exports.SocketModule = SocketModule;
 //# sourceMappingURL=socketModule.js.map

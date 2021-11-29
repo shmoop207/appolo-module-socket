@@ -1,14 +1,15 @@
-import { define, factory, IFactory, inject, Injector, singleton} from '@appolo/inject'
+import {define, factory, IFactory, inject, Injector, singleton} from '@appolo/inject'
 import {App} from '@appolo/core'
 import {Objects} from '@appolo/utils'
 import {IOptions} from "../IOptions";
-import socketIo = require('socket.io');
-import socketIoRedis = require('socket.io-redis');
+import {Server} from 'socket.io' ;
+import {createAdapter} from '@socket.io/redis-adapter';
+import Redis = require("ioredis");
 
 @define()
 @singleton()
 @factory()
-export class SocketServer implements IFactory<socketIo.Server> {
+export class SocketServer implements IFactory<Server> {
 
     @inject() injector: Injector;
     @inject() app: App;
@@ -17,13 +18,15 @@ export class SocketServer implements IFactory<socketIo.Server> {
 
     public async get() {
 
-        let io = socketIo((this.app.tree.root as App).route.server, Objects.defaults({}, this.moduleOptions.socket || {}, {"transports": ['polling','websocket']}));
+        let io = new Server((this.app.tree.root as App).route.server, Objects.defaults({}, this.moduleOptions.socket || {}, {"transports": ['polling', 'websocket']}));
 
         if (this.moduleOptions.redis) {
 
-            io.adapter(socketIoRedis(this.moduleOptions.redis));
-        }
+            let pubClient = new Redis(this.moduleOptions.redis);
+            let subClient = pubClient.duplicate();
 
+            io.adapter(createAdapter(pubClient, subClient));
+        }
 
 
         return io;

@@ -1,12 +1,11 @@
 import {App, createApp} from '@appolo/core'
 import {SocketModule, SocketProvider} from "../";
-import * as io from 'socket.io-client';
+import {io, Socket} from 'socket.io-client';
 import {Promises} from '@appolo/utils';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
 import chaiHttp = require('chai-http');
-import Socket = SocketIOClient.Socket;
 import {SocketServer} from "../moudle/src/socketServer";
 
 chai.use(chaiHttp);
@@ -23,7 +22,7 @@ describe("socket module Spec", function () {
     beforeEach(async () => {
         app = createApp({root: __dirname + "/mock", environment: "production", port: 8182});
 
-        app.module.use( SocketModule.for({socket: {transports: ['polling', 'websocket']}}));
+        app.module.use(SocketModule.for({socket: {transports: ['polling', 'websocket']}}));
 
 
         await app.launch();
@@ -47,7 +46,7 @@ describe("socket module Spec", function () {
         });
 
         await new Promise((resolve, reject) => {
-            socket.on('connect', resolve);
+            socket.on('connect', resolve as any);
 
             socket.on('connect_error', reject);
         });
@@ -100,11 +99,13 @@ describe("socket module Spec", function () {
 
         socket = io('http://localhost:8182/middleware', {transports: ['websocket'], forceNew: true, query: {token: 2}});
 
-        let err = await new Promise((resolve, reject) => {
-            socket.on("error", resolve)
+        let err: Error = await new Promise((resolve, reject) => {
+            socket.on("connect_error", (e) => {
+                resolve(e)
+            })
         });
 
-        err.should.be.eq("invalid token");
+        err.message.should.be.eq("invalid token");
 
         socket.disconnect();
 
@@ -120,10 +121,10 @@ describe("socket module Spec", function () {
 
         let socket2 = io('http://localhost:8182/foo', {transports: ['websocket'], forceNew: true, query: {token: 2}});
 
-        let [data1, data2] = await Promise.all<any, any>([new Promise(resolve => {
-            socket1.emit("middle", "ping", resolve)
+        let [data1, data2] = await Promise.all<[any, any]>([new Promise(resolve => {
+            socket1.emit("middle", "ping", (data) => resolve(data))
         }), new Promise(resolve => {
-            socket2.emit("foo", "ping", resolve)
+            socket2.emit("foo", "ping", (data) => resolve(data))
         })]);
 
 
@@ -147,13 +148,13 @@ describe("socket module Spec", function () {
             query: {token: 1}
         });
 
-        await new Promise(resolve => socket1.on("connect", resolve));
+        await new Promise(resolve => socket1.on("connect", resolve as any));
 
 
         let socketProvider = app.injector.get<SocketProvider>(SocketProvider);
 
 
-        socketProvider.clients.size.should.eq(2);
+        socketProvider.clients.size.should.eq(1);
 
         setTimeout(() => socketProvider.sendToAll("test", "working"));
 
@@ -177,8 +178,8 @@ describe("socket module Spec", function () {
 
         let app = createApp({root: __dirname + "/mock", environment: "production", port: 8184});
         let app2 = createApp({root: __dirname + "/mock", environment: "production", port: 8183});
-         app.module.use( SocketModule.for({redis, socket: {transports: ['polling', 'websocket']}}));
-         app2.module.use( SocketModule.for({redis, socket: {transports: ['polling', 'websocket']}}));
+        app.module.use(SocketModule.for({redis, socket: {transports: ['polling', 'websocket']}}));
+        app2.module.use(SocketModule.for({redis, socket: {transports: ['polling', 'websocket']}}));
 
 
         await app.launch();
@@ -196,7 +197,7 @@ describe("socket module Spec", function () {
 
         await new Promise(resolve => socket.emit("multi", "aaa", resolve));
 
-        await Promises.delay(4000);
+        await Promises.delay(8000);
         spy.should.have.been.called;
         spy2.should.have.been.called;
         await app.reset();

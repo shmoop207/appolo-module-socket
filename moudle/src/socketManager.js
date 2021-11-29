@@ -67,21 +67,21 @@ let SocketManager = class SocketManager {
         }
     }
 };
-tslib_1.__decorate([
-    inject_1.inject()
+(0, tslib_1.__decorate)([
+    (0, inject_1.inject)()
 ], SocketManager.prototype, "socketServer", void 0);
-tslib_1.__decorate([
-    inject_1.inject()
+(0, tslib_1.__decorate)([
+    (0, inject_1.inject)()
 ], SocketManager.prototype, "moduleOptions", void 0);
-tslib_1.__decorate([
-    inject_1.inject()
+(0, tslib_1.__decorate)([
+    (0, inject_1.inject)()
 ], SocketManager.prototype, "injector", void 0);
-tslib_1.__decorate([
-    inject_1.inject()
+(0, tslib_1.__decorate)([
+    (0, inject_1.inject)()
 ], SocketManager.prototype, "app", void 0);
-SocketManager = tslib_1.__decorate([
-    inject_1.define(),
-    inject_1.singleton()
+SocketManager = (0, tslib_1.__decorate)([
+    (0, inject_1.define)(),
+    (0, inject_1.singleton)()
 ], SocketManager);
 exports.SocketManager = SocketManager;
 //# sourceMappingURL=socketManager.js.map

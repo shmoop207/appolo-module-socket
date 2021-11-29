@@ -14,8 +14,8 @@ let TokenMiddleware = class TokenMiddleware {
         }
     }
 };
-TokenMiddleware = tslib_1.__decorate([
-    inject_1.define()
+TokenMiddleware = (0, tslib_1.__decorate)([
+    (0, inject_1.define)()
 ], TokenMiddleware);
 exports.TokenMiddleware = TokenMiddleware;
 //# sourceMappingURL=tokenMiddleware.js.map

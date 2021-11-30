@@ -9,7 +9,13 @@ const redis_adapter_1 = require("@socket.io/redis-adapter");
 const Redis = require("ioredis");
 let SocketServer = class SocketServer {
     async get() {
-        let io = new socket_io_1.Server(this.app.tree.root.route.server, utils_1.Objects.defaults({}, this.moduleOptions.socket || {}, { "transports": ['polling', 'websocket'] }));
+        let io = new socket_io_1.Server(this.app.tree.root.route.server, utils_1.Objects.defaults({}, this.moduleOptions.socket || {}, {
+            cors: {
+                origin: "https://example.com",
+                methods: ["GET", "POST"]
+            },
+            transports: ['polling', 'websocket']
+        }));
         if (this.moduleOptions.redis) {
             let pubClient = new Redis(this.moduleOptions.redis);
             let subClient = pubClient.duplicate();

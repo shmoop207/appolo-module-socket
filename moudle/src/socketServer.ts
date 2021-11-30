@@ -18,7 +18,13 @@ export class SocketServer implements IFactory<Server> {
 
     public async get() {
 
-        let io = new Server((this.app.tree.root as App).route.server, Objects.defaults({}, this.moduleOptions.socket || {}, {"transports": ['polling', 'websocket']}));
+        let io = new Server((this.app.tree.root as App).route.server, Objects.defaults({}, this.moduleOptions.socket || {}, {
+            cors: {
+                origin: "https://example.com",
+                methods: ["GET", "POST"]
+            },
+            transports: ['polling', 'websocket']
+        }));
 
         if (this.moduleOptions.redis) {
 

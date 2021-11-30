@@ -20,7 +20,7 @@ export class SocketServer implements IFactory<Server> {
 
         let io = new Server((this.app.tree.root as App).route.server, Objects.defaults({}, this.moduleOptions.socket || {}, {
             cors: {
-                origin: "https://example.com",
+                origin: "*",
                 methods: ["GET", "POST"]
             },
             transports: ['polling', 'websocket']

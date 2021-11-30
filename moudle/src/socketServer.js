@@ -11,7 +11,7 @@ let SocketServer = class SocketServer {
     async get() {
         let io = new socket_io_1.Server(this.app.tree.root.route.server, utils_1.Objects.defaults({}, this.moduleOptions.socket || {}, {
             cors: {
-                origin: "https://example.com",
+                origin: "*",
                 methods: ["GET", "POST"]
             },
             transports: ['polling', 'websocket']

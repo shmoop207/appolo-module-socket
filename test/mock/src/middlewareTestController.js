@@ -12,10 +12,10 @@ let MiddlewareTestController = class MiddlewareTestController extends index_1.So
         return { name, action: "MiddlewareTestController", user: this.user };
     }
 };
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, index_1.action)("middle")
 ], MiddlewareTestController.prototype, "test", null);
-MiddlewareTestController = (0, tslib_1.__decorate)([
+MiddlewareTestController = tslib_1.__decorate([
     (0, index_1.socket)("/middleware"),
     (0, index_1.middleware)(tokenMiddleware_1.TokenMiddleware)
 ], MiddlewareTestController);

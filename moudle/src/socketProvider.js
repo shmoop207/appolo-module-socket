@@ -32,19 +32,19 @@ let SocketProvider = class SocketProvider {
         return this.socketManager.clients;
     }
 };
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketProvider.prototype, "socketServer", void 0);
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketProvider.prototype, "socketManager", void 0);
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketProvider.prototype, "moduleOptions", void 0);
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.init)()
 ], SocketProvider.prototype, "_init", null);
-SocketProvider = (0, tslib_1.__decorate)([
+SocketProvider = tslib_1.__decorate([
     (0, inject_1.define)(),
     (0, inject_1.singleton)()
 ], SocketProvider);

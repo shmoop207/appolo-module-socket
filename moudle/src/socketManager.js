@@ -67,19 +67,19 @@ let SocketManager = class SocketManager {
         }
     }
 };
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketManager.prototype, "socketServer", void 0);
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketManager.prototype, "moduleOptions", void 0);
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketManager.prototype, "injector", void 0);
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketManager.prototype, "app", void 0);
-SocketManager = (0, tslib_1.__decorate)([
+SocketManager = tslib_1.__decorate([
     (0, inject_1.define)(),
     (0, inject_1.singleton)()
 ], SocketManager);

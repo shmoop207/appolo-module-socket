@@ -4,7 +4,8 @@ import {Objects} from '@appolo/utils'
 import {IOptions} from "../IOptions";
 import {Server} from 'socket.io' ;
 import {createAdapter} from '@socket.io/redis-adapter';
-import Redis = require("ioredis");
+import {default as Redis, RedisOptions} from "ioredis";
+import {parentPort} from "worker_threads";
 
 @define()
 @singleton()
@@ -28,8 +29,20 @@ export class SocketServer implements IFactory<Server> {
 
         if (this.moduleOptions.redis) {
 
-            let pubClient = new Redis(this.moduleOptions.redis);
-            let subClient = pubClient.duplicate();
+            let conn = new URL(this.moduleOptions.redis);
+
+            let connOptions: RedisOptions = {
+                host: conn.hostname,
+                port: parseInt(conn.port),
+                password: conn.password,
+                lazyConnect: true
+            }
+
+            let pubClient = new Redis(connOptions);
+            let subClient = new Redis(connOptions);
+
+            await Promise.all([pubClient.connect(), subClient.connect()]);
+
 
             io.adapter(createAdapter(pubClient, subClient));
         }

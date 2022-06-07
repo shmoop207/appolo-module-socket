@@ -121,10 +121,10 @@ describe("socket module Spec", function () {
         let socket2 = (0, socket_io_client_1.io)('http://localhost:8183/multi', { transports: ['websocket'], forceNew: true });
         let spy = sinon.spy();
         let spy2 = sinon.spy();
-        socket2.on("test", spy2);
-        socket.on("test", spy);
+        socket2.on("test", spy);
+        socket.on("test", spy2);
         await new Promise(resolve => socket.emit("multi", "aaa", resolve));
-        await utils_1.Promises.delay(8000);
+        await utils_1.Promises.delay(5000);
         spy.should.have.been.called;
         spy2.should.have.been.called;
         await app.reset();

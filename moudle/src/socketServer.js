@@ -6,7 +6,7 @@ const inject_1 = require("@appolo/inject");
 const utils_1 = require("@appolo/utils");
 const socket_io_1 = require("socket.io");
 const redis_adapter_1 = require("@socket.io/redis-adapter");
-const Redis = require("ioredis");
+const ioredis_1 = require("ioredis");
 let SocketServer = class SocketServer {
     async get() {
         let io = new socket_io_1.Server(this.app.tree.root.route.server, utils_1.Objects.defaults({}, this.moduleOptions.socket || {}, {
@@ -17,23 +17,31 @@ let SocketServer = class SocketServer {
             transports: ['polling', 'websocket']
         }));
         if (this.moduleOptions.redis) {
-            let pubClient = new Redis(this.moduleOptions.redis);
-            let subClient = pubClient.duplicate();
+            let conn = new URL(this.moduleOptions.redis);
+            let connOptions = {
+                host: conn.hostname,
+                port: parseInt(conn.port),
+                password: conn.password,
+                lazyConnect: true
+            };
+            let pubClient = new ioredis_1.default(connOptions);
+            let subClient = new ioredis_1.default(connOptions);
+            await Promise.all([pubClient.connect(), subClient.connect()]);
             io.adapter((0, redis_adapter_1.createAdapter)(pubClient, subClient));
         }
         return io;
     }
 };
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketServer.prototype, "injector", void 0);
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketServer.prototype, "app", void 0);
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, inject_1.inject)()
 ], SocketServer.prototype, "moduleOptions", void 0);
-SocketServer = (0, tslib_1.__decorate)([
+SocketServer = tslib_1.__decorate([
     (0, inject_1.define)(),
     (0, inject_1.singleton)(),
     (0, inject_1.factory)()

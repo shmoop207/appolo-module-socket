@@ -191,13 +191,13 @@ describe("socket module Spec", function () {
         let spy = sinon.spy();
         let spy2 = sinon.spy();
 
-        socket2.on("test", spy2);
+        socket2.on("test", spy);
 
-        socket.on("test", spy);
+        socket.on("test", spy2);
 
         await new Promise(resolve => socket.emit("multi", "aaa", resolve));
 
-        await Promises.delay(8000);
+        await Promises.delay(5000);
         spy.should.have.been.called;
         spy2.should.have.been.called;
         await app.reset();

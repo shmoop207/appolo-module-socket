@@ -8,7 +8,7 @@ class SocketController {
     }
     async initialize() {
         await this.onInitialized();
-        Object.keys(this._options.actions).forEach(action => {
+        Object.keys(this._options.actions || {}).forEach(action => {
             let eventName = this._options.actions[action];
             this._socket.on(eventName, this[action].bind(this));
         });

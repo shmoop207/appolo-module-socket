@@ -14,7 +14,7 @@ let TokenMiddleware = class TokenMiddleware {
         }
     }
 };
-TokenMiddleware = (0, tslib_1.__decorate)([
+TokenMiddleware = tslib_1.__decorate([
     (0, inject_1.define)()
 ], TokenMiddleware);
 exports.TokenMiddleware = TokenMiddleware;

@@ -8,10 +8,10 @@ let testController = class testController extends index_1.SocketController {
         return { name, action: "test" };
     }
 };
-(0, tslib_1.__decorate)([
+tslib_1.__decorate([
     (0, index_1.action)("test2")
 ], testController.prototype, "test", null);
-testController = (0, tslib_1.__decorate)([
+testController = tslib_1.__decorate([
     (0, index_1.socket)()
 ], testController);
 exports.testController = testController;

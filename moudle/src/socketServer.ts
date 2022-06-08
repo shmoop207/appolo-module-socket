@@ -5,7 +5,6 @@ import {IOptions} from "../IOptions";
 import {Server} from 'socket.io' ;
 import {createAdapter} from '@socket.io/redis-adapter';
 import {default as Redis, RedisOptions} from "ioredis";
-import {parentPort} from "worker_threads";
 
 @define()
 @singleton()
